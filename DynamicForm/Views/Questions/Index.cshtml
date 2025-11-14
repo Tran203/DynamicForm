@@ -1,0 +1,77 @@
+﻿@model IEnumerable<DynamicForm.Models.Question>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRequired)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderIndex)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxLength)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Form)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsRequired)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderIndex)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxLength)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Form.Title)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

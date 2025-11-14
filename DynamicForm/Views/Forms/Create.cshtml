@@ -1,0 +1,170 @@
+﻿@using DynamicForm.Models.ViewModels
+@model FormCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Form</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CompanyId" class="control-label"></label>
+                <input asp-for="CompanyId" class="form-control" />
+                <span asp-validation-for="CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+
+
+            <!--Questions-->
+            <!-- Dynamic Questions -->
+            <div id="questions-container">
+            </div>
+            <button type="button" onclick="addQuestion()">Add Question</button>
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+   <script>
+        // -----------------------------------------------------------------
+        //  Global index for question array
+        // -----------------------------------------------------------------
+        let qIndex = 0;
+
+        // -----------------------------------------------------------------
+        //  Add a new question block
+        // -----------------------------------------------------------------
+        function addQuestion() {
+            const html = `
+<div class="card mb-3 question-block" data-index="${qIndex}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-bold">Question ${qIndex + 1}</span>
+        <button type="button" class="btn-close" aria-label="Remove"
+                onclick="this.closest('.question-block').remove();"></button>
+    </div>
+
+    <div class="card-body">
+        <input type="hidden" name="Questions[${qIndex}].OrderIndex" value="${qIndex}" />
+
+        <!-- Question Text -->
+        <div class="mb-3">
+            <label class="form-label">Question Text <span class="text-danger">*</span></label>
+            <input name="Questions[${qIndex}].Text" class="form-control" required />
+        </div>
+
+        <!-- Type -->
+        <div class="mb-3">
+            <label class="form-label">Type</label>
+                               <select name="Questions[${qIndex}].Type" class="form-control" onchange="toggleOptions(this, ${qIndex})">
+                                            <option>Text</option>
+                                            <option>MultipleChoice</option>
+                                            <option>Checkbox</option>
+                                            <option>Rating</option>
+                                            <option>Dropdown</option>
+               </select>
+        </div>
+
+        <!-- Required -->
+        <div class="form-check mb-3">
+            <input type="checkbox" name="Questions[${qIndex}].IsRequired" class="form-check-input" />
+            <label class="form-check-label">Required</label>
+        </div>
+
+        <!-- Min / Max (Rating) -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Min Value (Rating)</label>
+                <input name="Questions[${qIndex}].MinValue" type="number" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Max Value (Rating)</label>
+                <input name="Questions[${qIndex}].MaxValue" type="number" class="form-control" />
+            </div>
+        </div>
+
+        <!-- Options textarea (shown for MC, CB, DD) -->
+        <div id="options-${qIndex}" class="mb-3" style="display:none;">
+            <label class="form-label">Options <small class="text-muted">(one per line)</small></label>
+            <textarea name="Questions[${qIndex}].OptionsText"
+                      class="form-control" rows="3"
+                      placeholder="Option 1\nOption 2\nOption 3"></textarea>
+        </div>
+    </div>
+</div>`;
+            document.getElementById('questions-container').insertAdjacentHTML('beforeend', html);
+            qIndex++;
+        }
+
+        // -----------------------------------------------------------------
+        //  Show / hide options textarea based on type
+        // -----------------------------------------------------------------
+        function toggleOptions(select, idx) {
+            const container = document.getElementById('options-' + idx);
+            const show = ['MultipleChoice', 'Checkbox', 'Dropdown'].includes(select.value);
+            container.style.display = show ? 'block' : 'none';
+        }
+
+        // -----------------------------------------------------------------
+        //  Bootstrap client-side validation (works with novalidate)
+        // -----------------------------------------------------------------
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}
